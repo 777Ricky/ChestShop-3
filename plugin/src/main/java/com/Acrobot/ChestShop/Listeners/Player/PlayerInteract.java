@@ -16,6 +16,7 @@ import com.Acrobot.ChestShop.Events.TransactionEvent;
 import com.Acrobot.ChestShop.Permission;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
+import com.Acrobot.ChestShop.Signs.ShopSignColors;
 import com.Acrobot.ChestShop.Utils.ItemUtil;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import org.bukkit.Bukkit;
@@ -104,7 +105,8 @@ public class PlayerInteract implements Listener {
                         return;
                     }
                     String[] lines = sign.getLines();
-                    lines[ITEM_LINE] = itemCode;
+                    // The bold question mark is an autofill marker, not item formatting.
+                    lines[ITEM_LINE] = ShopSignColors.restore(lines[ITEM_LINE].replace(ChatColor.BOLD.toString(), ""), itemCode);
 
                     SignChangeEvent changeEvent = new SignChangeEvent(block, player, lines);
                     com.Acrobot.ChestShop.ChestShop.callEvent(changeEvent);

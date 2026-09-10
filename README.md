@@ -16,6 +16,23 @@ It's never been that easy to create shops! With features like shop protection an
 
 If you need any help check the wiki or just ask in IRC or Discord!
 
+Sign colors
+--------------------------------
+Shop signs support Bukkit `&` color and formatting codes on all four lines. For example:
+
+```text
+&bYourName
+&e64
+&aB 10:&cS 5
+&bDiamond
+```
+
+Use `&0` through `&f` for colors, `&k` through `&o` for formatting, and `&r` to reset.
+Leave the first line blank (or enter only a color code) to fill in your name automatically.
+Shop validation, ownership, quantities, prices, and items use the text without colors.
+When ChestShop replaces text, such as an item alias or `?`, it keeps the starting
+color codes. Buy and sell prices retain their colors separately when normalized.
+
 Helpful Links
 --------------------------------
 * [Wiki](https://www.spigotmc.org/wiki/chestshop-3/)

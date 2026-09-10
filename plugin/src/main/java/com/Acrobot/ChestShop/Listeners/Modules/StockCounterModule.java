@@ -9,6 +9,7 @@ import com.Acrobot.ChestShop.Events.ItemParseEvent;
 import com.Acrobot.ChestShop.Events.PreShopCreationEvent;
 import com.Acrobot.ChestShop.Events.TransactionEvent;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
+import com.Acrobot.ChestShop.Signs.ShopSignColors;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -155,7 +156,8 @@ public class StockCounterModule implements Listener {
             numTradedItemsInChest += extraStack.getAmount();
         }
 
-        sign.setLine(QUANTITY_LINE, String.format(PRICE_LINE_WITH_COUNT, quantity, numTradedItemsInChest));
+        sign.setLine(QUANTITY_LINE, ShopSignColors.restore(sign.getLine(QUANTITY_LINE),
+                String.format(PRICE_LINE_WITH_COUNT, quantity, numTradedItemsInChest)));
         sign.update(true);
     }
 
@@ -174,7 +176,7 @@ public class StockCounterModule implements Listener {
             return;
         }
 
-        sign.setLine(QUANTITY_LINE, Integer.toString(quantity));
+        sign.setLine(QUANTITY_LINE, ShopSignColors.restore(sign.getLine(QUANTITY_LINE), Integer.toString(quantity)));
         sign.update(true);
     }
 

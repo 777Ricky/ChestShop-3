@@ -11,12 +11,12 @@ import com.Acrobot.ChestShop.Events.ShopEditedEvent;
 import com.Acrobot.ChestShop.Events.SignValidationEvent;
 import com.Acrobot.ChestShop.Listeners.Block.Break.SignBreak;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
+import com.Acrobot.ChestShop.Signs.ShopSignColors;
 import com.Acrobot.ChestShop.UUIDs.NameManager;
 import com.Acrobot.ChestShop.Utils.uBlock;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
@@ -49,20 +49,24 @@ public class SignCreate implements Listener {
             return;
         }
 
-        if (ChestShopSign.isValid(event.getLines()) && !NameManager.canUseName(event.getPlayer(), OTHER_NAME_DESTROY, ChestShopSign.getOwner(event.getLines()))) {
+        String[] coloredLines = ShopSignColors.translate(event.getLines());
+        if (ChestShopSign.isValid(coloredLines) && !NameManager.canUseName(event.getPlayer(), OTHER_NAME_DESTROY, ChestShopSign.getOwner(coloredLines))) {
             event.setCancelled(true);
             sign.update();
-            ChestShop.logDebug("Shop sign creation at " + sign.getLocation() + " by " + event.getPlayer().getName() + " was cancelled as they weren't able to create a shop for the account '" + ChestShopSign.getOwner(event.getLines()) + "'");
+            ChestShop.logDebug("Shop sign creation at " + sign.getLocation() + " by " + event.getPlayer().getName() + " was cancelled as they weren't able to create a shop for the account '" + ChestShopSign.getOwner(coloredLines) + "'");
             return;
         }
 
         // Make sure the sign actually changed before running any further logic
-        if (shopExisted && Arrays.equals(event.getLines(), sign.getLines())) {
+        if (shopExisted && Arrays.equals(coloredLines, sign.getLines())) {
+            for (int i = 0; i < coloredLines.length; i++) {
+                event.setLine(i, coloredLines[i]);
+            }
             ChestShop.logDebug("Shop sign modification at " + sign.getLocation() + " by " + event.getPlayer().getName() + " was ignored as the new lines match the already existing sign");
             return;
         }
 
-        String[] lines = StringUtil.stripColourCodes(event.getLines());
+        String[] lines = StringUtil.stripColourCodes(coloredLines);
 
         SignValidationEvent signValidationEvent = new SignValidationEvent(lines);
         ChestShop.callEvent(signValidationEvent);
@@ -86,6 +90,7 @@ public class SignCreate implements Listener {
         }
 
         for (byte i = 0; i < preEvent.getSignLines().length && i < 4; ++i) {
+            preEvent.setSignLine(i, ShopSignColors.restore(coloredLines[i], preEvent.getSignLine(i)));
             event.setLine(i, preEvent.getSignLine(i));
         }
 
